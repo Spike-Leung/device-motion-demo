@@ -64,9 +64,9 @@ export default function Counter() {
 
       <fieldset>
         <legend>rotationRate</legend>
-        <p>X: {info.rotationRate.x}</p>
-        <p>Y: {info.rotationRate.y}</p>
-        <p>Z: {info.rotationRate.z}</p>
+        <p>alpha: {info.rotationRate.alpha}</p>
+        <p>beta: {info.rotationRate.beta}</p>
+        <p>gamma: {info.rotationRate.gamma}</p>
       </fieldset>
 
       <fieldset>
