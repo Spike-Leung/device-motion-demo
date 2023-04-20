@@ -64,19 +64,20 @@ export default function Counter() {
 
   useEffect(() => {
     window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate }) => {
-      setInfo((state) => { return { ...state, acceleration, accelerationIncludingGravity, rotationRate } });
+      throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate });
     }, true);
 
     window.addEventListener("deviceorientation", (event) => {
-      setInfo((state) => { return { ...state, deviceOrientation: event } });
+      throttleSetInfo(event);
     });
   }, [])
 
   return (
     <div class="flex flex-col gap-4 w-full">
-      <div>
+      <div class="flex flex-col gap-2">
+        <p class="text-gray-400">IOS 需要用户点击按钮获取传感器器权限</p>
         <button onClick={requestDeviceMotionPermission} class="border-1 p-1">requestDeviceMotionPermission</button>
-        <button onClick={requestDeviceorientationPermission} class="ml-4 border-1 p-1">requestDeviceorientationPermission</button>
+        <button onClick={requestDeviceorientationPermission} class="border-1 p-1">requestDeviceorientationPermission</button>
       </div>
       <p class="text-gray-300">数据基本是一直在更新，页面每 1s 更新一次最后获取的数据。相关 API: </p>
       <ul class="text-blue-300 text-underline">
