@@ -30,7 +30,7 @@ export default function Counter() {
       ...state,
       ...params,
     };
-  }), 1000);
+  }), 500);
 
   // https://dev.to/li/how-to-requestpermission-for-devicemotion-and-deviceorientation-events-in-ios-13-46g2
   const requestDeviceMotionPermission = () => {
@@ -54,7 +54,7 @@ export default function Counter() {
         .then(permissionState => {
           if (permissionState === 'granted') {
             window.addEventListener("deviceorientation", (event) => {
-              throttleSetInfo(event);
+              throttleSetInfo({ deviceOrientation: event });
             });
           }
         })
@@ -68,7 +68,7 @@ export default function Counter() {
     }, true);
 
     window.addEventListener("deviceorientation", (event) => {
-      throttleSetInfo(event);
+      throttleSetInfo({ deviceOrientation: event });
     });
   }, [])
 
@@ -79,7 +79,7 @@ export default function Counter() {
         <button onClick={requestDeviceMotionPermission} class="border-1 p-1">requestDeviceMotionPermission</button>
         <button onClick={requestDeviceorientationPermission} class="border-1 p-1">requestDeviceorientationPermission</button>
       </div>
-      <p class="text-gray-300">数据基本是一直在更新，页面每 1s 更新一次最后获取的数据。相关 API: </p>
+      <p class="text-gray-300">数据基本是一直在更新，页面每 0.5s 更新一次最后获取的数据。相关 API: </p>
       <ul class="text-blue-300 text-underline">
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/devicemotion_event">Window: devicemotion event</a></li>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientation_event">Window: deviceorientation event</a></li>
