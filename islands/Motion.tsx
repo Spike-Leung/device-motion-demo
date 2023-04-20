@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 
 export default function Counter() {
   const [info, setInfo] = useState({
@@ -11,13 +11,16 @@ export default function Counter() {
     // 磁力计（物理方向）
     deviceOrientation: {}
   });
-  window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate }) => {
-    setInfo({ ...info, acceleration, accelerationIncludingGravity, rotationRate });
-  }, true);
 
-  window.addEventListener("deviceorientation", (event) => {
-    setInfo({ ...info, deviceorientation: event });
-  });
+  useEffect(() => {
+    window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate }) => {
+      setInfo((state) => { return { ...state, acceleration, accelerationIncludingGravity, rotationRate } });
+    }, true);
+
+    window.addEventListener("deviceorientation", (event) => {
+      setInfo((state) => { return { ...state, deviceOrientation: event } });
+    });
+  }, []);
 
   return (
     <div class="flex-column gap-2 w-full">
