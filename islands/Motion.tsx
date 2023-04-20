@@ -41,6 +41,15 @@ export default function Counter() {
     }
   }
 
+  useEffect(() => {
+    window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate }) => {
+      setInfo((state) => { return { ...state, acceleration, accelerationIncludingGravity, rotationRate } });
+    }, true);
+
+    window.addEventListener("deviceorientation", (event) => {
+      setInfo((state) => { return { ...state, deviceOrientation: event } });
+    });
+  }, [])
 
   return (
     <div class="flex-column gap-2 w-full">
