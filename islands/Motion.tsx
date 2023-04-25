@@ -38,9 +38,8 @@ export default function Counter() {
       DeviceMotionEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
-            console.log("granted")
-            window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate }) => {
-              throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate });
+            window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
+              throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate, interval });
             }, true);
           }
         })
@@ -63,8 +62,8 @@ export default function Counter() {
   }
 
   useEffect(() => {
-    window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate }) => {
-      throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate });
+    window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
+      throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate, interval });
     }, true);
 
     window.addEventListener("deviceorientation", (event) => {
@@ -86,27 +85,32 @@ export default function Counter() {
         <li></li>
       </ul>
       <fieldset>
+        <legend>interval</legend>
+        <p class="text-gray-400">一个数字，表示从设备获取数据的时间间隔（以毫秒为单位）。</p>
+        <p>{info.interval} ms</p>
+      </fieldset>
+      <fieldset>
         <legend>acceleration</legend>
         <p class="text-gray-400">提供设备在三个轴上的加速度的对象：x、y 和 z。加速度以 m/s² 表示。</p>
-        <p>X: {info.acceleration.x}</p>
-        <p>Y: {info.acceleration.y}</p>
-        <p>Z: {info.acceleration.z}</p>
+        <p>X: {info.acceleration.x} m/s²</p>
+        <p>Y: {info.acceleration.y} m/s²</p>
+        <p>Z: {info.acceleration.z} m/s²</p>
       </fieldset>
 
       <fieldset>
         <legend>accelerationIncludingGravity</legend>
         <p class="text-gray-400">一个对象，在重力作用下，在三个轴上提供设备的加速度：x、y 和 z。加速度以 m/s² 表示。</p>
-        <p>X: {info.accelerationIncludingGravity.x}</p>
-        <p>Y: {info.accelerationIncludingGravity.y}</p>
-        <p>Z: {info.accelerationIncludingGravity.z}</p>
+        <p>X: {info.accelerationIncludingGravity.x} m/s²</p>
+        <p>Y: {info.accelerationIncludingGravity.y} m/s²</p>
+        <p>Z: {info.accelerationIncludingGravity.z} m/s²</p>
       </fieldset>
 
       <fieldset>
         <legend>rotationRate</legend>
         <p class="text-gray-400">一个对象，给出设备方向在三个方向轴上的变化率：alpha、beta 和 gamma。旋转速率以每秒度数表示。</p>
-        <p>alpha: {info.rotationRate.alpha}</p>
-        <p>beta: {info.rotationRate.beta}</p>
-        <p>gamma: {info.rotationRate.gamma}</p>
+        <p>alpha: {info.rotationRate.alpha} degree/s</p>
+        <p>beta: {info.rotationRate.beta} degree/s</p>
+        <p>gamma: {info.rotationRate.gamma} degree/s</p>
       </fieldset>
 
       <fieldset>
