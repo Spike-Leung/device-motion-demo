@@ -12,7 +12,10 @@ export default function Counter() {
     deviceOrientation: {}
   });
 
-  const throttle = function(fn, delay) {
+  const [logDataFlag, setLogDataFlag] = useState(false)
+  const [data, setData] = useState([])
+
+  const throttle = function(fn, delay: number) {
     let lastTime = 0;
 
     return function(...args) {
@@ -32,15 +35,57 @@ export default function Counter() {
     };
   }), 500);
 
+  const deviceOrientationListener = (event) => {
+    if (logDataFlag) {
+      const { alpha, gamma, beta } = event;
+      setData((state) => [...state, {
+        type: 'deviceorientation',
+        alpha,
+        beta,
+        gamma,
+        time: Date.now()
+      }]);
+    }
+    throttleSetInfo({ deviceOrientation: event });
+  }
+
+  const deviceMotionListener = ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
+    if (logDataFlag) {
+      setData((state) => [...state, {
+        type: 'devicemotion',
+        acceleration,
+        accelerationIncludingGravity,
+        rotationRate,
+        interval,
+        time: Date.now()
+      }]);
+    }
+    throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate, interval });
+  }
+
+  const startLogData = () => {
+    setLogDataFlag(true);
+    setData([])
+  }
+
+  const stopLogData = () => {
+    setLogDataFlag(false);
+    // add download url
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'data.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   // https://dev.to/li/how-to-requestpermission-for-devicemotion-and-deviceorientation-events-in-ios-13-46g2
   const requestDeviceMotionPermission = () => {
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
       DeviceMotionEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
-            window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
-              throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate, interval });
-            }, true);
+            window.addEventListener("devicemotion", deviceMotionListener, true);
           }
         })
         .catch(console.error);
@@ -52,9 +97,7 @@ export default function Counter() {
       DeviceOrientationEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
-            window.addEventListener("deviceorientation", (event) => {
-              throttleSetInfo({ deviceOrientation: event });
-            });
+            window.addEventListener("deviceorientation", deviceOrientationListener);
           }
         })
         .catch(console.error);
@@ -62,13 +105,8 @@ export default function Counter() {
   }
 
   useEffect(() => {
-    window.addEventListener("devicemotion", ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
-      throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate, interval });
-    }, true);
-
-    window.addEventListener("deviceorientation", (event) => {
-      throttleSetInfo({ deviceOrientation: event });
-    });
+    window.addEventListener("devicemotion", deviceMotionListener, true);
+    window.addEventListener("deviceorientation", deviceOrientationListener);
   }, [])
 
   return (
@@ -120,6 +158,10 @@ export default function Counter() {
         <p>beta: {info.deviceOrientation.beta}</p>
         <p>gamma: {info.deviceOrientation.gamma}</p>
       </fieldset>
+      <div class="flex flex-col gap-2">
+        {!logDataFlag && (<button onClick={startLogData} class="border-1 p-1">Start Log Data</button>)}
+        {logDataFlag && (<button onClick={stopLogData} class="border-1 p-1">Stop Log Data</button>)}
+      </div>
     </div >
   );
 }
