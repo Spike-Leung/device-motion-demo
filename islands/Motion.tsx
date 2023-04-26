@@ -1,4 +1,4 @@
-import { useState, useEffect } from "preact/hooks";
+import { useState, useEffect, useRef } from "preact/hooks";
 
 export default function Counter() {
   const [info, setInfo] = useState({
@@ -12,8 +12,13 @@ export default function Counter() {
     deviceOrientation: {}
   });
 
-  const [logDataFlag, setLogDataFlag] = useState(false)
+  const [isLogData, setIsLogData] = useState(false)
   const [data, setData] = useState([])
+  const isLogDataRef = useRef(false)
+
+  useEffect(() => {
+    isLogDataRef.current = isLogData;
+  }, [isLogData])
 
   const throttle = function(fn, delay: number) {
     let lastTime = 0;
@@ -36,7 +41,7 @@ export default function Counter() {
   }), 500);
 
   const deviceOrientationListener = (event) => {
-    if (logDataFlag) {
+    if (isLogDataRef.current) {
       const { alpha, gamma, beta } = event;
       setData((state) => [...state, {
         type: 'deviceorientation',
@@ -50,7 +55,7 @@ export default function Counter() {
   }
 
   const deviceMotionListener = ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
-    if (logDataFlag) {
+    if (isLogDataRef.current) {
       setData((state) => [...state, {
         type: 'devicemotion',
         acceleration,
@@ -64,12 +69,12 @@ export default function Counter() {
   }
 
   const startLogData = () => {
-    setLogDataFlag(true);
+    setIsLogData(true);
     setData([])
   }
 
   const stopLogData = () => {
-    setLogDataFlag(false);
+    setIsLogData(false);
     // add download url
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const link = document.createElement('a');
@@ -159,8 +164,8 @@ export default function Counter() {
         <p>gamma: {info.deviceOrientation.gamma}</p>
       </fieldset>
       <div class="flex flex-col gap-2">
-        {!logDataFlag && (<button onClick={startLogData} class="border-1 p-1">Start Log Data</button>)}
-        {logDataFlag && (<button onClick={stopLogData} class="border-1 p-1">Stop Log Data</button>)}
+        {!isLogData && (<button onClick={() => startLogData()} class="border-1 p-1">Start Log Data</button>)}
+        {isLogData && (<button onClick={() => stopLogData()} class="border-1 p-1">Stop Log Data</button>)}
       </div>
     </div >
   );
