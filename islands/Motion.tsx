@@ -43,12 +43,14 @@ export default function Counter() {
   const deviceOrientationListener = (event) => {
     if (isLogDataRef.current) {
       const { alpha, gamma, beta } = event;
+      const time = Date.now();
       setData((state) => [...state, {
         type: 'deviceorientation',
         alpha,
         beta,
         gamma,
-        time: Date.now()
+        time,
+        timeStr: `${time}`
       }]);
     }
     throttleSetInfo({ deviceOrientation: event });
@@ -56,13 +58,15 @@ export default function Counter() {
 
   const deviceMotionListener = ({ acceleration, accelerationIncludingGravity, rotationRate, interval }) => {
     if (isLogDataRef.current) {
+      const time = Date.now()
       setData((state) => [...state, {
         type: 'devicemotion',
         acceleration,
         accelerationIncludingGravity,
         rotationRate,
         interval,
-        time: Date.now()
+        time,
+        timeStr: `${time}`
       }]);
     }
     throttleSetInfo({ acceleration, accelerationIncludingGravity, rotationRate, interval });
@@ -75,6 +79,7 @@ export default function Counter() {
 
   const stopLogData = () => {
     setIsLogData(false);
+
     // add download url
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const link = document.createElement('a');
