@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "preact/hooks";
+import { format } from "datetime"
 
 export default function Counter() {
   const [info, setInfo] = useState({
@@ -14,6 +15,7 @@ export default function Counter() {
 
   const [isLogData, setIsLogData] = useState(false)
   const [data, setData] = useState([])
+  const [logStartTime, setLogStartTime] = useState(null)
   const isLogDataRef = useRef(false)
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export default function Counter() {
   }
 
   const startLogData = () => {
+    setLogStartTime(new Date());
     setIsLogData(true);
     setData([])
   }
@@ -80,11 +83,12 @@ export default function Counter() {
   const stopLogData = () => {
     setIsLogData(false);
 
+    const filename = format(logStartTime, "yyyyMMddhhmmss")
     // add download url
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'data.json';
+    link.download = `${filename}.json`
     link.click();
     URL.revokeObjectURL(url);
   }
