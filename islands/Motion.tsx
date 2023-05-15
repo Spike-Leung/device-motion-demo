@@ -92,7 +92,7 @@ export default function Counter() {
   const stopLogData = () => {
     setIsLogData(false);
 
-    const filename = format(logStartTime, "yyyyMMddhhmmss")
+    const filename = format(logStartTime, "yyyyMMddHHmmss")
     // add download url
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const link = document.createElement('a');
