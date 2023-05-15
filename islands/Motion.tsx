@@ -108,7 +108,8 @@ export default function Counter() {
       DeviceMotionEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
-            window.addEventListener("devicemotion", deviceMotionListener, true);
+            window.removeEventListener("devicemotion", deviceMotionListener)
+            window.addEventListener("devicemotion", deviceMotionListener);
           }
         })
         .catch(console.error);
@@ -120,6 +121,7 @@ export default function Counter() {
       DeviceOrientationEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
+            window.removeEventListener("deviceorientation", deviceOrientationListener)
             window.addEventListener("deviceorientation", deviceOrientationListener);
           }
         })
@@ -128,6 +130,8 @@ export default function Counter() {
   }
 
   useEffect(() => {
+    window.removeEventListener("devicemotion", deviceMotionListener)
+    window.removeEventListener("deviceorientation", deviceOrientationListener)
     window.addEventListener("devicemotion", deviceMotionListener);
     window.addEventListener("deviceorientation", deviceOrientationListener);
   }, [])
