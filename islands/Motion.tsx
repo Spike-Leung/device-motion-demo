@@ -64,8 +64,17 @@ export default function Counter() {
       setData((state) => [...state, {
         type: 'devicemotion',
         acceleration,
+        "acceleration.x": acceleration.x,
+        "acceleration.y": acceleration.y,
+        "acceleration.z": acceleration.z,
         accelerationIncludingGravity,
+        "accelerationIncludingGravity.x": accelerationIncludingGravity.x,
+        "accelerationIncludingGravity.y": accelerationIncludingGravity.y,
+        "accelerationIncludingGravity.z": accelerationIncludingGravity.z,
         rotationRate,
+        "rotationRate.alpha": rotationRate.alpha,
+        "rotationRate.beta": rotationRate.beta,
+        "rotationRate.gamma": rotationRate.gamma,
         interval,
         time,
         timeStr: `${time}`
@@ -119,7 +128,7 @@ export default function Counter() {
   }
 
   useEffect(() => {
-    window.addEventListener("devicemotion", deviceMotionListener, true);
+    window.addEventListener("devicemotion", deviceMotionListener);
     window.addEventListener("deviceorientation", deviceOrientationListener);
   }, [])
 
