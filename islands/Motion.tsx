@@ -93,11 +93,71 @@ export default function Counter() {
     setIsLogData(false);
 
     const filename = format(logStartTime, "yyyyMMddHHmmss")
-    // add download url
-    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
+    downloadCSV(filename)
+  }
+
+  const downloadCSV = (filename) => {
+    const head = [
+      "time",
+      "event",
+      "interval (ms)",
+      "acceleration.x (m/s^2)",
+      "acceleration.y (m/s^2)",
+      "acceleration.z (m/s^2)",
+      "accelerationIncludingGravity.x (m/s^2)",
+      "accelerationIncludingGravity.y (m/s^2)",
+      "accelerationIncludingGravity.z (m/s^2)",
+      "rotationRate.alpha (rad/s)",
+      "rotationRate.beta (rad/s)",
+      "rotationRate.gamma (rad/s)",
+      "alpha (degree)",
+      "beta (degree)",
+      "gamma (degree)"
+    ]
+    const exportData = data.map(({
+      time = '',
+      type = '',
+      interval = '',
+      acceleration = {},
+      accelerationIncludingGravity = {},
+      rotationRate = {},
+      alpha = '',
+      beta = '',
+      gamma = ''
+    }) => {
+      return [
+        time,
+        type,
+        interval,
+        acceleration.x || '',
+        acceleration.y || '',
+        acceleration.z || '',
+        accelerationIncludingGravity.x || '',
+        accelerationIncludingGravity.y || '',
+        accelerationIncludingGravity.z || '',
+        rotationRate.alpha || '',
+        rotationRate.beta || '',
+        rotationRate.gamma || '',
+        alpha || '',
+        beta || '',
+        gamma || ''
+      ]
+    })
+    const dataStr = [head, ...exportData].join("\n");
+    const url = URL.createObjectURL(new Blob([dataStr], { type: "text/csv;charset=utf-8;" }));
+    download(url, `${filename}.csv`)
+  }
+
+  const downloadJSON = (filename) => {
+    const dataStr = JSON.stringify(data, null, 2);
+    const url = URL.createObjectURL(new Blob([dataStr], { type: "application/json" }));
+    download(url, `${filename}.json`)
+  }
+
+  const download = (url = "", filename = "") => {
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${filename}.json`
+    link.download = filename
     link.click();
     URL.revokeObjectURL(url);
   }
