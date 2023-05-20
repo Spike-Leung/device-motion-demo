@@ -129,18 +129,18 @@ export default function Counter() {
         time,
         type,
         interval,
-        acceleration.x || '',
-        acceleration.y || '',
-        acceleration.z || '',
-        accelerationIncludingGravity.x || '',
-        accelerationIncludingGravity.y || '',
-        accelerationIncludingGravity.z || '',
-        rotationRate.alpha || '',
-        rotationRate.beta || '',
-        rotationRate.gamma || '',
-        alpha || '',
-        beta || '',
-        gamma || ''
+        acceleration.x ?? '',
+        acceleration.y ?? '',
+        acceleration.z ?? '',
+        accelerationIncludingGravity.x ?? '',
+        accelerationIncludingGravity.y ?? '',
+        accelerationIncludingGravity.z ?? '',
+        rotationRate.alpha ?? '',
+        rotationRate.beta ?? '',
+        rotationRate.gamma ?? '',
+        alpha ?? '',
+        beta ?? '',
+        gamma ?? ''
       ]
     })
     const dataStr = [head, ...exportData].join("\n");
